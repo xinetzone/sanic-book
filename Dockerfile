@@ -1,6 +1,6 @@
 # 使用官方 Python 轻量级镜像
 # https://hub.docker.com/_/python
-FROM python:3.8-slim
+FROM tiangolo/uwsgi-nginx:python3.11
 
 # 将本地代码拷贝到容器内
 ENV APP_HOME /app
