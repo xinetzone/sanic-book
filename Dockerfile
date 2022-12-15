@@ -16,4 +16,4 @@ EXPOSE 8080
 # 如果您的容器实例拥有多个 CPU 核心，我们推荐您把线程数设置为与 CPU 核心数一致
 # CMD exec gunicorn --bind :80 --workers 1 --threads 8 --timeout 0 main:app
 #--host=0.0.0.0 --port=1337 --fast --workers=4
-CMD exec sanic server:app --host=0.0.0.0 --port=8080
+CMD exec sanic server:app --host=0.0.0.0 --port=8080 --fast
