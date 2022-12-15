@@ -5,10 +5,10 @@ FROM python:3.8-slim
 # 将本地代码拷贝到容器内
 ENV APP_HOME /app
 WORKDIR $APP_HOME
-COPY . ./
+COPY ./app /app
 
 # 安装依赖
-RUN pip install sanic
+RUN pip install --no-cache-dir --upgrade -r /app/requirements.txt
 
 # 启动 Web 服务
 # 这里我们使用了 gunicorn 作为 Server，1 个 worker 和 8 个线程
