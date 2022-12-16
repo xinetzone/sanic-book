@@ -154,16 +154,16 @@ html_theme_options = {
     "navbar_align": "content",  # "right", "left", "content"
     "navbar_start": "navbar-logo.html",
     "navbar_center": "navbar-nav.html",
-    "navbar_end": ["theme-switcher", "navbar-icon-links"],
-    "primary_sidebar_end": "sidebar-ethical-ads.html",
-    "secondary_sidebar_items": ["search-field.html", "page-toc.html", "edit-this-page.html", "version-switcher"],
+    "navbar_end": ["theme-switcher", "navbar-icon-links", "version-switcher"],
+    "primary_sidebar_end": ["sidebar-ethical-ads.html"],
+    "secondary_sidebar_items": ["page-toc.html", "edit-this-page.html"],
     # "page_sidebar_items": [], # 删除右侧边栏
     "footer_items": ["copyright", "sphinx-version", "last-updated", ],
     # "use_download_button": True,
 }
 
 html_sidebars = {
-    "*": ["sidebar-nav-bs.html", "sidebar-ethical-ads.html"]
+    "*": ["sidebar-nav-bs.html", "sidebar-ethical-ads.html", "search-field.html", ]
     # "**": [],
 }
 
