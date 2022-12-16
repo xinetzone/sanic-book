@@ -132,8 +132,20 @@ html_logo = '_static/images/logo.jpg'
 # pixels large.
 html_favicon = '_static/images/favicon.jpg'
 html_last_updated_fmt = '%Y-%m-%d, %H:%M:%S'
+json_url = 'https://xinetzone.github.io/sanic-book/_static/switcher.json'
+version = release
+
+switcher_version = f'v{version}'
+if "dev" in version:
+    switcher_version = "dev"
+elif "rc" in version:
+    switcher_version = version.split("rc")[0] + " (rc)"
 
 html_theme_options = {
+    "switcher": {
+        "json_url": json_url,
+        "version_match": switcher_version,
+    },
     "use_edit_page_button": True,
     "show_nav_level": 0,
     "show_toc_level": 0,
@@ -142,9 +154,9 @@ html_theme_options = {
     "navbar_align": "content",  # "right", "left", "content"
     "navbar_start": "navbar-logo.html",
     "navbar_center": "navbar-nav.html",
-    "navbar_end": ["search-field.html", "theme-switcher", "navbar-icon-links"],
+    "navbar_end": ["theme-switcher", "navbar-icon-links"],
     "primary_sidebar_end": "sidebar-ethical-ads.html",
-    "secondary_sidebar_items": ["page-toc.html", "edit-this-page.html"],
+    "secondary_sidebar_items": ["search-field.html", "page-toc.html", "edit-this-page.html", "version-switcher"],
     # "page_sidebar_items": [], # 删除右侧边栏
     "footer_items": ["copyright", "sphinx-version", "last-updated", ],
     # "use_download_button": True,
@@ -157,7 +169,7 @@ html_sidebars = {
 
 html_context = {
     "github_user": "xinetzone",
-    "github_repo": "tvm-book",
+    "github_repo": "sanic-book",
     "github_version": "main",
     "doc_path": "doc",
 }
