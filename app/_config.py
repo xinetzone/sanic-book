@@ -1,5 +1,4 @@
 from typing import Any
-from sanic import Sanic, text
 from sanic.config import Config
 import toml
 
