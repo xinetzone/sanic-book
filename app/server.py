@@ -1,7 +1,10 @@
 from sanic import Sanic
 from sanic.response import text
+from _config import TomlConfig
 
-app = Sanic("MyHelloWorldApp")
+toml_config = TomlConfig(path="./configs/main.toml")
+app = Sanic(toml_config.APP_NAME, config=toml_config)
+
 
 @app.get("/")
 async def hello_world(request):
