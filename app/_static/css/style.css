@@ -1,0 +1,35 @@
+h1 {
+    margin: 0;
+    font-size: 50px;
+    text-align: center;
+    margin: 0 auto;
+    border: 1px solid rgb(252, 218, 218);
+    background-color: aquamarine;
+    text-shadow: 3px 3px 1px rgb(235, 232, 232);
+    ;
+}
+
+p,
+li {
+    font-size: 16px;
+    /* line-height 后面可以跟不同的参数，如果是数字，就是当前字体大小乘上数字 */
+    line-height: 2;
+    letter-spacing: 1px;
+    margin: 0 auto;
+}
+
+img {
+    display: block;
+    margin: 0 auto;
+}
+
+h1 img {
+    display: inline;
+    width: 100px;
+    height: 50px;
+}
+
+u {
+    text-decoration-line: underline;
+    text-decoration-style:  wavy; /* 用于区别于 `<a>` */
+}

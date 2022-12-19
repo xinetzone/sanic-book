@@ -1,1 +1,8 @@
 app_name = "xinet"
+# ===================== 服务器 =====================
+# server_name = "xinet.zone"
+FORWARDED_SECRET = "super-duper-secret"
+REAL_IP_HEADER = "CF-Connecting-IP"
+PROXIES_COUNT = 2
+# ===================== 认证 =======================
+SECRET = "KEEP_IT_SECRET_KEEP_IT_SAFE"

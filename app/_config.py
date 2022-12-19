@@ -7,7 +7,7 @@ class TomlConfig(Config):
     def __init__(self, *args, path: str, **kwargs):
         super().__init__(*args, **kwargs)
 
-        with open(path, "r") as f:
+        with open(path, "r", encoding="utf-8") as f:
             self.apply(toml.load(f))
 
     def apply(self, config):
