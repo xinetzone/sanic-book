@@ -1,3 +1,7 @@
+* {
+    box-sizing: border-box;
+}
+
 /* styles for the editor */
 .playable {
     font-family: monospace;
@@ -5,24 +9,27 @@
     margin-bottom: 10px;
     background-color: #F4F7F8;
     border: none;
-    border-left: 6px solid #558ABB;
+    border-left: 6px solid #baccde;
     color: #4D4E53;
     width: 90%;
-    max-width: 700px;
+    /* max-width: 700px; */
     padding: 10px 10px 0px;
     font-size: 90%;
 }
 
 .playable-css {
-    height: 80px;
+    height: 200px;
+    display: flex;
 }
 
 .playable-html {
-    height: 160px;
+    height: 200px;
+    display: block;
 }
 
 .playable-buttons {
     text-align: right;
+    height: 200px;
     width: 90%;
     max-width: 700px;
     padding: 5px 10px 5px 26px;

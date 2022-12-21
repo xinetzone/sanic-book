@@ -1,0 +1,35 @@
+<h2>表单(实验)</h2>
+<section>
+  <h3>测试</h3>
+  <form action="/index" method="post">
+    <fieldset>
+      <legend>Fruit juice size</legend>
+      <p>
+        <input type="radio" name="size" id="size_1" value="small">
+        <label for="size_1">Small</label>
+      </p>
+      <p>
+        <input type="radio" name="size" id="size_2" value="medium">
+        <label for="size_2">Medium</label>
+      </p>
+      <p>
+        <input type="radio" name="size" id="size_3" value="large">
+        <label for="size_3">Large</label>
+      </p>
+    </fieldset>
+    <input type="file" name="file" id="file" accept="image/*" multiple>
+    <input type="url" id="url" name="url">
+    <input type="number" name="change" id="pennies" min="0" max="1" step="0.01">
+    <label for="price">Choose a maximum house price: </label>
+    <input type="range" name="price" id="price" min="50000" max="500000" step="100" value="250000">
+    <output class="price-output" for="price"></output>
+    <input type="datetime-local" name="datetime" id="datetime">
+    <input type="month" name="month" id="month">
+    <input type="time" name="time" id="time">
+    <input type="week" name="week" id="week">
+    <label for="myDate">When are you available this summer?</label>
+    <input type="date" name="myDate" min="2013-06-01" max="2013-08-31" step="7" id="myDate">
+    <input type="color" name="color" id="color">
+    <textarea cols="30" rows="8"></textarea>
+  </form>
+</section>

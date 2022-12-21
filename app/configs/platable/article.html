@@ -1,0 +1,57 @@
+<link href="/static/css/platable.css" rel="stylesheet">
+<style class="editable">
+  h1, h2 {
+    color: purple;
+  }
+
+  p {
+    color: gray;
+  }
+</style>
+<h2>练习(实验)</h2>
+<section class="preview" style="height: 200px;overflow:auto">
+    <h1>List path tests</h1>
+    <ul>
+        <li><a target="_blank">Link me to the blue whale image</a></li>
+        <li><a target="_blank">Link me to the narwhal image</a></li>
+        <li><a target="_blank">Link me to Google image search</a></li>
+        <li><a>Link me to the paragraph at the bottom of the page</a></li>
+    </ul>
+    <div></div>
+    <p id="bottom">The bottom of the page!</p>
+</section>
+
+<textarea cols="50" rows="15" class="playable playable-css" style="overflow:auto;">
+    h1 {
+      font-size: 2rem;
+      margin: 0;
+      color: purple;
+    }
+
+    li {
+      color: gray;
+      margin: 0.5em 0;
+    }
+
+    div {
+      height: 600px;
+      width: 90%;
+    }
+</textarea>
+<textarea cols="50" rows="15" class="playable playable-html">
+<h1>List path tests</h1>
+<ul>
+  <li><a target="_blank">Link me to the blue whale image</a></li>
+  <li><a target="_blank">Link me to the narwhal image</a></li>
+  <li><a target="_blank">Link me to Google image search</a></li>
+  <li><a>Link me to the paragraph at the bottom of the page</a></li>
+</ul>
+<div></div>
+<p id="bottom">The bottom of the page!</p>
+</textarea>
+
+<div class="playable-buttons">
+    <input id="reset" type="button" value="Reset" />
+</div>
+</body>
+<script src="/static/scripts/playable.js"></script>

@@ -12,6 +12,14 @@
 
 如果图像对您的内容里有意义，则应使用 HTML 图像。如果图像纯粹是装饰，则应使用 [CSS 背景图片](https://developer.mozilla.org/zh-CN/docs/Web/CSS/background-image)。
 
+[响应式图片](https://developer.mozilla.org/zh-CN/docs/Learn/HTML/Multimedia_and_embedding/Responsive_images)
+
 ## 视频与音频
 
 [视频和音频内容](https://developer.mozilla.org/zh-CN/docs/Learn/HTML/Multimedia_and_embedding/Video_and_audio_content)
+
+## Web 参考
+
+- [HTML Living Standard](https://whatwg-cn.github.io/html/multipage/)
+- [Web 开发技术](https://developer.mozilla.org/zh-CN/docs/Web)
+- [使用 HTML 解决常见问题](https://developer.mozilla.org/zh-CN/docs/Learn/HTML/Howto)

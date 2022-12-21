@@ -1,5 +1,4 @@
 /* || General setup */
-
 html,
 body {
   margin: 0;
@@ -12,7 +11,7 @@ html {
 }
 
 body {
-  width: 70%;
+  width: 98%;
   min-width: 800px;
   margin: 0 auto;
 }
@@ -61,7 +60,7 @@ li {
 
 /* || header layout */
 header {
-  margin-bottom: 10px;
+  margin-bottom: 7px;
   display: flex;
   flex-flow: row wrap;
 }
@@ -78,8 +77,8 @@ article,
 aside,
 footer,
 section {
-  background-color: rgba(0, 255, 0, 0.5);
-  padding: 1%;
+  background-color: rgba(208, 248, 208, 0.5);
+  padding:0.5%;
 }
 
 header img {
@@ -180,4 +179,219 @@ aside img {
 
 footer {
   margin-top: 10px;
+}
+
+form {
+  /* 居中表单 */
+  margin: 0 auto;
+  width: 400px;
+  /* 显示表单的轮廓 */
+  padding: 1em;
+  border: 1px solid #CCC;
+  border-radius: 1em;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+form li+li {
+  margin-top: 1em;
+}
+
+span {
+  display: inline-block;
+  background: red;
+}
+
+input[type=checkbox] {
+  width: 100px;
+  height: 100px;
+}
+
+label {
+  cursor: pointer;
+}
+
+:root input[type=checkbox] {
+  /* original check box are push outside the viexport */
+  position: absolute;
+  left: -1000em;
+}
+
+:root input[type=checkbox]+label:before {
+  content: "";
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  margin: 0 .5em 0 0;
+  background: url("https://developer.mozilla.org/files/4173/checkbox-sprite.png") no-repeat 0 0;
+
+  /* The following is used to adjust the position of
+   the check boxes on the text baseline */
+
+  vertical-align: bottom;
+  position: relative;
+  bottom: 2px;
+}
+
+:root input[type=checkbox]:checked+label:before {
+  background-position: 0 -16px;
+}
+
+:root input[type=checkbox]:disabled+label:before {
+  background-position: 0 -32px;
+}
+
+:root input[type=checkbox]:checked:disabled+label:before {
+  background-position: 0 -48px;
+}
+
+:root input[type=checkbox]:focus+label:before {
+  outline: 1px dotted black;
+}
+
+select {
+  width: 80px;
+  padding: 10px;
+}
+
+option {
+  padding: 5px;
+  color: red;
+}
+
+select,
+option {
+  -webkit-appearance: none;
+  /* To gain control over the appearance on WebKit/Chromium */
+  -moz-appearance: none;
+  /* To gain control over the appearance on Gecko */
+  /* To gain control over the appearance on and Trident (IE)
+     Note that it also works on Gecko and has partial effects on WebKit */
+  background: none;
+}
+
+input+span {
+  position: relative;
+}
+
+input:required+span::after {
+  font-size: 0.7rem;
+  position: absolute;
+  content: "required";
+  color: white;
+  background-color: black;
+  padding: 5px 10px;
+  top: -26px;
+  left: -70px;
+}
+
+input+span {
+  position: relative;
+}
+
+input+span::before {
+  position: absolute;
+  right: -20px;
+  top: 5px;
+}
+
+input:invalid {
+  border: 2px solid red;
+}
+
+input:invalid+span::before {
+  content: "✖";
+  color: red;
+}
+
+input:valid+span::before {
+  content: "✓";
+  color: green;
+}
+
+input+span {
+  position: relative;
+}
+
+input+span::after {
+  font-size: 0.7rem;
+  position: absolute;
+  padding: 5px 10px;
+  top: -26px;
+}
+
+input:required+span::after {
+  color: white;
+  background-color: black;
+  content: "Required";
+  left: -70px;
+}
+
+input:out-of-range+span::after {
+  color: white;
+  background-color: red;
+  width: 155px;
+  content: "Outside allowable value range";
+  left: -182px;
+}
+
+input[type="text"]:disabled {
+  background: #eee;
+  border: 1px solid #ccc;
+}
+
+.disabled-label {
+  color: #aaa;
+}
+
+input[type="radio"]::before {
+  display: block;
+  content: " ";
+  width: 10px;
+  height: 10px;
+  border-radius: 6px;
+  background-color: red;
+  font-size: 1.2em;
+  transform: translate(3px, 3px) scale(0);
+  transform-origin: center;
+  transition: all 0.3s ease-in;
+}
+
+input[type="radio"]:checked::before {
+  transform: translate(3px, 3px) scale(1);
+  transition: all 0.3s cubic-bezier(0.25, 0.25, 0.56, 2);
+}
+
+input~span {
+  position: relative;
+}
+
+input:default~span::after {
+  font-size: 0.7rem;
+  position: absolute;
+  content: "Default";
+  color: white;
+  background-color: black;
+  padding: 5px 10px;
+  right: -65px;
+  top: -3px;
+}
+
+input[type="radio"]:indeterminate {
+  border: 2px solid red;
+  animation: 0.4s linear infinite alternate border-pulse;
+}
+
+@keyframes border-pulse {
+  from {
+    border: 2px solid red;
+  }
+
+  to {
+    border: 6px solid red;
+  }
 }
