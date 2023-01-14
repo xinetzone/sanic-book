@@ -142,6 +142,7 @@ elif "rc" in version:
     switcher_version = version.split("rc")[0] + " (rc)"
 
 html_theme_options = {
+    "github_url": "https://github.com/xinetzone/sanic-book",
     "switcher": {
         "json_url": json_url,
         "version_match": switcher_version,
