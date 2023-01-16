@@ -1,7 +1,12 @@
 [
     {
+        "name": "dev",
+        "version": "latest",
+        "url": "https://sanic-book.readthedocs.io/zh_CN/latest/"
+    },
+    {
         "name": "main",
-        "version": "main",
+        "version": "latest",
         "url": "https://xinetzone.github.io/sanic-book/"
     }
 ]
