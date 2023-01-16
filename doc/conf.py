@@ -189,3 +189,8 @@ myst_enable_extensions = [
 # bibtex_reference_style = "author_year"
 # graphviz_output_format = 'svg'
 
+intersphinx_mapping = {
+    'python': ('https://daobook.github.io/cpython/', None),
+    'tvm': ('https://xinetzone.github.io/tvm/', None),
+    # "strawberry": ("https://strawberry.rocks/"),
+}
