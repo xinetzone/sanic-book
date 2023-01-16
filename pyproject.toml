@@ -35,6 +35,7 @@ doc = [
   "sphinx-thebe",
   "sphinx-comments",
   "plotly",
+  "pandas",
   "ipywidgets",
   # "pandas",
   # "matplotlib",
