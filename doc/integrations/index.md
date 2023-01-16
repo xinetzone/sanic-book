@@ -2,4 +2,5 @@
 
 ```{toctree}
 GraphQL
+plotly
 ```

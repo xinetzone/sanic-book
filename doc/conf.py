@@ -88,7 +88,10 @@ html_css_files = [
 # 避免将 jupter 执行报错的信息输出到 cmd
 nb_merge_streams = True
 nb_execution_allow_errors = True
-nb_execution_mode = 'off'
+nb_execution_mode = "auto" # "cache" # "off" "force" "inline"
+
+# application/vnd.plotly.v1+json and application/vnd.bokehjs_load.v0+json
+suppress_warnings = ["mystnb.unknown_mime_type"]
 
 nb_mime_priority_overrides = [
     ('html', 'text/plain', 0),  # 最高级别
