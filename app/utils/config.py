@@ -1,12 +1,16 @@
-from typing import Any
-from sanic.config import Config
+from typing import Any, Callable, Sequence
 import toml
+from sanic.config import Config, SANIC_PREFIX
 
 
 class TomlConfig(Config):
-    def __init__(self, *args, path: str, **kwargs):
-        super().__init__(*args, **kwargs)
-
+    def __init__(self, path: str,
+                 defaults: dict[str, str | bool | int | float | None] = None,
+                 env_prefix: str | None = SANIC_PREFIX,
+                 keep_alive: bool | None = None,
+                 *,
+                 converters: Sequence[Callable[[str], Any]] | None = None):
+        super().__init__(defaults, env_prefix, keep_alive, converters=converters)
         with open(path, "r", encoding="utf-8") as f:
             self.apply(toml.load(f))
 
@@ -26,4 +30,3 @@ class TomlConfig(Config):
             else:
                 retval[upper_key] = value
         return retval
-
