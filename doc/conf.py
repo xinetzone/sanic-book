@@ -50,6 +50,8 @@ extensions = [
     # "sphinx_thebe",
     "sphinx_sitemap",
     "sphinx_design",
+    # Directive for embedding GraphiQL view in documentation
+    "sphinx_graphql.graphiql",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
