@@ -40,7 +40,8 @@ jobs:
         run: |
           sudo apt-get install graphviz
           pip install .[doc]
-          pip install sphinxcontrib-websupport
+          pip install sphinxcontrib-websupport pdm
+          pdm config python.use_venv false -g
           conda install -c conda-forge pandoc
           invoke doc
       - name: Setup Pages
