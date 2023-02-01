@@ -11,7 +11,6 @@ editors/index
 concepts/index
 integrations/index
 operations/index
-sanic
 faq
 errors
 ```
