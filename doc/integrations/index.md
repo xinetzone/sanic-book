@@ -1,6 +1,6 @@
 # 集成
 
 ```{toctree}
-GraphQL
+GraphQL/index
 plotly
 ```
