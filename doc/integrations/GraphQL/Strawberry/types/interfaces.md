@@ -1,22 +1,13 @@
----
-title: Interfaces
----
+(Interfaces)=
+# 接口
 
-# Interfaces
+接口是一种抽象类型，可以通过对象类型实现。
 
-Interfaces are an abstract type which may be implemented by object types.
+接口有字段，但从未实例化。相反，对象可以实现接口，这使它们成为该接口的成员。此外，字段可以返回接口类型。当这种情况发生时，返回的对象可以是该接口的任何成员。
 
-An interface has fields, but it’s never instantiated. Instead, objects may
-implement interfaces, which makes them a member of that interface. Also, fields
-may return interface types. When this happens, the returned object may be any
-member of that interface.
+例如，假设 `Customer` （接口）既可以是 `Individual`（对象），也可以是 `Company` （对象）。下面是在 [GraphQL 模式定义语言](https://graphql.org/learn/schema/#type-language)（Schema Definition Language，简称 SDL）中可能出现的情况：
 
-For example, let's say a `Customer` (interface) can either be an `Individual`
-(object) or a `Company` (object). Here's what that might look like in the
-[GraphQL Schema Definition Language](https://graphql.org/learn/schema/#type-language)
-(SDL):
-
-```graphql
+```
 interface Customer {
   name: String!
 }
@@ -36,13 +27,11 @@ type Query {
 }
 ```
 
-Notice that the `Customer` interface requires the `name: String!` field. Both
-`Company` and `Individual` implement that field so that they can satisfy the
-`Customer` interface.
+注意，`Customer` 接口要求 `name: String!` 字段。`Company` 和 `Individual` 都实现了该字段，以便他们能够满足 `Customer` 接口。
 
-When querying, you can select the fields on an interface:
+查询时，可以选择接口上的字段：
 
-```graphql
+```
 query {
   customers {
     name
@@ -50,13 +39,9 @@ query {
 }
 ```
 
-Whether the object is a `Company` or an `Individual`, it doesn’t matter – you
-still get their name. If you want some object-specific fields, you can query
-them with an
-[inline fragment](https://graphql.org/learn/queries/#inline-fragments), for
-example:
+无论对象是 `Company` 还是 `Individual`，都没有关系——你仍然得到他们的名字。如果你想要一些特定于对象的字段，你可以用[内联片段](https://graphql.org/learn/queries/#inline-fragments)查询它们，例如：
 
-```graphql
+```
 query {
   customers {
     name
@@ -69,36 +54,32 @@ query {
 }
 ```
 
-Interfaces are a good choice whenever you have a set of objects that are used
-interchangeably, and they have several significant fields in common. When they
-don’t have fields in common, use a [Union](/docs/types/union) instead.
+当您有一组可互换使用的对象时，接口是很好的选择，而且它们有几个重要的共同字段。当它们没有共同的字段时，使用 [Union](./union)。
 
-## Defining interfaces
+## 定义接口
 
-Interfaces are defined using the `@strawberry.interface` decorator:
+接口是使用 `@strawberry.interface` 装饰器定义的：
 
-```python+schema
+```python
 import strawberry
 
 @strawberry.interface
 class Customer:
     name: str
----
+```
+```
 interface Customer {
   name: String!
 }
 ```
 
-<Note>
+```{note}
+接口类永远不应该直接实例化。
+```
 
-Interface classes should never be instantiated directly.
+## 实现接口
 
-</Note>
-
-## Implementing interfaces
-
-To define an object type that implements an interface, the type must inherit
-from the interface:
+要定义实现接口的对象类型，该类型必须继承自接口：
 
 ```python
 import strawberry
@@ -116,21 +97,16 @@ class Company(Customer):
     ...
 ```
 
-<Tip>
-
-If you add an object type which implements an interface, but that object type
-doesn’t appear in your schema as a field return type or a union member, then you
-will need to add that object to the Schema definition directly.
-
+````{tip}
+如果您添加了实现接口的对象类型，但该对象类型没有作为字段返回类型或联合成员出现在您的模式中，那么您将需要直接将该对象添加到模式定义中。
 ```python
 schema = strawberry.Schema(query=Query, types=[Individual, Company])
 ```
+````
 
-</Tip>
+接口也可以实现其他接口：
 
-Interfaces can also implement other interfaces:
-
-```python+schema
+```python
 import strawberry
 
 @strawberry.interface
@@ -147,7 +123,8 @@ class PasswordTooShort(FieldError):
     message: str
     field: str
     fix: str
----
+```
+```
 interface Error {
   message: String!
 }
@@ -164,9 +141,9 @@ type PasswordTooShort implements FieldError & Error {
 }
 ```
 
-## Implementing fields
+## 实现字段
 
-Interfaces can provide field implementations as well. For example:
+接口也可以提供字段实现。例如：
 
 ```python
 import strawberry
@@ -179,9 +156,7 @@ class Customer:
         return self.name.title()
 ```
 
-This resolve method will be called by objects who implement the interface.
-Object classes can override the implementation by defining their own `name`
-field:
+这个 resolve 方法将由实现该接口的对象调用。对象类可以通过定义自己的 `name` 字段来覆盖实现：
 
 ```python
 import strawberry
@@ -194,12 +169,9 @@ class Company(Customer):
         return f"{self.name} Limited"
 ```
 
-## Resolving an interface
+## 解析接口
 
-When a field’s return type is an interface, GraphQL needs to know what specific
-object type to use for the return value. In the example above, each customer
-must be categorized as an `Individual` or `Company`. To do this you need to
-always return an instance of an object type from your resolver:
+当字段的返回类型是接口时，GraphQL 需要知道返回值使用什么特定的对象类型。在上面的例子中，每个 customer 必须被归类为 `Individual` 或 `Company`。要做到这一点，你需要总是从你的解析器返回对象类型的实例：
 
 ```python
 import strawberry

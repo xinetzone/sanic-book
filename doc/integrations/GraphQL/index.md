@@ -3,4 +3,5 @@
 ```{toctree}
 
 Strawberry/index
+embed
 ```

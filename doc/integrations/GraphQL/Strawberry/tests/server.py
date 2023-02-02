@@ -8,5 +8,5 @@ app = Sanic(__name__)
 
 app.add_route(
     GraphQLView.as_view(schema=schema, graphiql=True),
-    "/graphql",
+    "/devices",
 )

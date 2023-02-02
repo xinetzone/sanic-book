@@ -11,6 +11,6 @@ editors/index
 concepts/index
 integrations/index
 operations/index
+errors/index
 faq
-errors
 ```

@@ -1,31 +1,27 @@
----
-title: Scalars
----
+(Scalars)=
+# 标量
 
-# Scalars
+标量类型表示查询叶部分的具体值。例如，在下面的查询中，name 字段将解析为标量类型（在这种情况下，它是 `String` 类型）：
 
-Scalar types represent concrete values at the leaves of a query. For example
-in the following query the name field will resolve to a scalar type
-(in this case it's a `String` type):
-
-```graphql+response
-{
-  user {
-    name
-  }
-}
----
-{
-  "data": {
-    "user": {
-      "name": "Patrick"
-    }
-  }
-}
+```{eval-rst}
+.. graphiql:: 
+    :query:
+      {
+        user {
+          name
+        }
+      }
+    :response:
+      {
+        "data": {
+          "user": {
+            "name": "Patrick"
+          }
+        }
+      }
 ```
 
-There are several built-in scalars, and you can define custom scalars too.
-([Enums](/docs/types/enums) are also leaf values.) The built in scalars are:
+有几个内置的标量，也可以定义自定义标量。（[Enums](./enums)也是叶值。）内置的标量是：
 
 - `String`, maps to Python’s `str`
 - `Int`, a signed 32-bit integer, maps to Python’s `int`
@@ -39,9 +35,9 @@ There are several built-in scalars, and you can define custom scalars too.
 - `UUID`, a [UUID](https://docs.python.org/3/library/uuid.html#uuid.UUID) value serialized as a string
 - `Void`, always null, maps to Python’s `None`
 
-Fields can return built-in scalars by using the Python equivalent:
+字段可以通过使用 Python 等效函数返回内置标量：
 
-```python+schema
+```python
 import datetime
 import decimal
 import uuid
@@ -58,7 +54,8 @@ class Product:
     created_at: datetime.datetime
     price: decimal.Decimal
     void: None
----
+```
+```
 type Product {
   id: UUID!
   name: String!
@@ -72,7 +69,7 @@ type Product {
 }
 ```
 
-Scalar types can also be used as inputs:
+标量类型也可以用作输入：
 
 ```python
 import datetime
@@ -86,16 +83,9 @@ class Query:
         return date_input + datetime.timedelta(weeks=1)
 ```
 
-## Custom scalars
+## 自定义标量
 
-You can create custom scalars for your schema to represent specific types in
-your data model. This can be helpful to let clients know what kind of data they
-can expect for a particular field.
-
-To define a custom scalar you need to give it a name and functions that tell
-Strawberry how to serialize and deserialise the type.
-
-For example here is a custom scalar type to represent a Base64 string:
+可以为模式创建自定义标量，以表示数据模型中的特定类型。这有助于让客户知道对于特定的字段可以期望得到什么样的数据。要自定义标量，您需要给它名称和函数，告诉 Strawberry 如何序列化和反序列化该类型。例如，这里有自定义标量类型来表示 Base64 字符串：
 
 ```python
 import base64
@@ -124,17 +114,14 @@ result = schema.execute_sync("{ base64 }")
 assert results.data == {"base64": "aGk="}
 ```
 
-<Note>
-
-The `Base16`, `Base32` and `Base64` scalar types are available in `strawberry.scalars`
-
+````{note}
+`Base16`、`Base32` 和 `Base64` 标量类型在 `strawberry.scalars` 中可用
 ```python
 from strawberry.scalars import Base16, Base32, Base64
 ```
+````
 
-</Note>
-
-## Example JSONScalar
+## JSONScalar 示例
 
 ```python
 import json
@@ -150,7 +137,7 @@ JSON = strawberry.scalar(
 )
 ```
 
-Usage:
+用法：
 
 ```python
 @strawberry.type
@@ -160,38 +147,37 @@ class Query:
         return {"hello": {"a": 1}, "someNumbers": [1, 2, 3]}
 ```
 
-```graphql+response
-query ExampleDataQuery {
-  data
-}
----
-{
-  "data": {
-    "hello": {
-      "a": 1
-    },
-    "someNumbers": [1, 2, 3]
-  }
-}
+
+```{eval-rst}
+.. graphiql:: 
+    :query:
+      {
+        ExampleDataQuery {
+          data
+        }
+      }
+    :response:
+      {
+        "data": {
+          "hello": {
+            "a": 1
+          },
+          "someNumbers": [1, 2, 3]
+        }
+      }
 ```
-
-<Note>
-
-The `JSON` scalar type is available in `strawberry.scalars`
+````{note}
+`JSON` 标量类型在 `strawberry.scalars` 中可用。
 
 ```python
 from strawberry.scalars import JSON
 ```
+````
 
-</Note>
+(overriding-built-in-scalars)=
+## 覆盖内置的标量
 
-## Overriding built in scalars
-
-To override the behaviour of the built in scalars you can pass a map of
-overrides to your schema.
-
-Here is a full example of replacing the built in `DateTime` scalar with one that
-serializes all datetimes as unix timestamps:
+要覆盖内置标量的行为，可以将覆盖映射传递给您的模式。下面是完整的例子，将内置的 `DateTime` 标量替换为将所有 datetimes 序列化为 unix 时间戳的标量：
 
 ```python
 from datetime import datetime, timezone

@@ -1,5 +1,11 @@
 # Errors in strawberry
 
+```{toctree}
+:glob:
+
+*
+```
+
 Strawberry has built-in errors for when something goes wrong with the creation
 and usage of the schema.
 

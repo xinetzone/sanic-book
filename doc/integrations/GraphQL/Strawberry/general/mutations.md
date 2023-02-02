@@ -8,9 +8,8 @@
 ```python
 import strawberry
 
-
-# Reader, you can safely ignore Query in this example, it is required by
-# strawberry.Schema so it is included here for completeness
+# 在这个例子中，你可以安全地忽略 Query，它是 strawberry.Schema 所要求的，
+# 所以为了完整起见，这里包含了它
 @strawberry.type
 class Query:
     @strawberry.field
@@ -42,7 +41,7 @@ mutation {
 
 `addBook` 变更就是简化的例子。在实际应用程序中，变更通常需要处理错误并将这些错误传递回客户端。例如，如果这本书已经存在，可能希望返回异常。
 
-查看关于[处理错误的文档](../guides/errors#expected-errors)，了解如何从变更中返回类型的并集。
+查看关于[处理错误的文档](https://strawberry.rocks/docs/guides/errors#expected-errors)，了解如何从变更中返回类型的并集。
 
 ## 无返回数据的变更
 

@@ -1,24 +1,14 @@
 ---
 title: Schema Directives
 ---
+(Schema Directives)=
+# 模式指令
 
-# Schema Directives
+Strawberry 支持[模式指令](https://spec.graphql.org/June2018/#TypeSystemDirectiveLocation)，这些指令不会改变 GraphQL 模式的行为，而是提供了向其添加额外元数据的方法。
 
-Strawberry supports
-[schema directives](https://spec.graphql.org/June2018/#TypeSystemDirectiveLocation),
-which are directives that don't change the behavior of your GraphQL schema but
-instead provide a way to add additional metadata to it.
+> 例如，[Apollo Federation](../guides/federation.md) 集成是基于模式指令的。
 
-> For example our [Apollo Federation integration](../guides/federation.md) is
-> based on schema directives.
-
-Let's see how you can implement a schema directive in Strawberry, here we are
-creating a directive called `keys` that can be applied to
-[Object types definitions](./object-types.md) and accepts one parameter called
-`fields`. Note that directive names, by default, are converted to camelCase on
-the GraphQL schema.
-
-Here's how we can use it in our schema:
+模式中使用：
 
 ```python
 import strawberry
@@ -48,9 +38,9 @@ type User @keys(fields: "id") {
 }
 ```
 
-## Overriding field names
+## 重载字段名称
 
-You can use `strawberry.directive_field` to override the name of a field:
+可以使用 `strawberry.directive_field` 重载字段名称：
 
 ```python
 @strawberry.schema_directive(locations=[Location.OBJECT])
@@ -58,10 +48,9 @@ class Keys:
     fields: str = strawberry.directive_field(name="as")
 ```
 
-## Locations
+## 站点
 
-Schema directives can be applied to many different parts of a schema. Here's the
-list of all the allowed locations:
+模式指令可以应用于模式的许多不同部分。以下是所有允许的站点列表：
 
 | Name                   |                         | Description                                              |
 | ---------------------- | ----------------------- | -------------------------------------------------------- |

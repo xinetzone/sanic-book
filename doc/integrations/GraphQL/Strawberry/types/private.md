@@ -60,7 +60,7 @@ class Query:
 Queries can then select the fields and formats desired, but formatting only
 happens as requested:
 
-```graphql+json
+```+json
 {
   now {
     format(template: "{my.year}")

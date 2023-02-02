@@ -1,19 +1,13 @@
----
-title: Generics
----
+(Generics)=
+# 泛型
 
-# Generics
+Strawberry 支持使用 Python 的 `Generic` 类型动态创建可重用类型。
 
-Strawberry supports using Python's `Generic` typing to dynamically create
-reusable types.
+Strawberry 将从泛型类型和类型参数的组合中自动生成正确的 GraphQL 模式。泛型在对象类型、输入类型和查询参数、变更和标量中得到支持。
 
-Strawberry will automatically generate the correct GraphQL schema from the
-combination of the generic type and the type arguments. Generics are supported
-in Object types, Input types, and Arguments to queries, mutations, and scalars.
+示例：
 
-Let's take a look at an example:
-
-# Object Types
+# 对象类型
 
 ```python
 from typing import Generic, List, TypeVar
@@ -29,10 +23,9 @@ class Page(Generic[T]):
     items: List[T]
 ```
 
-This example defines a generic type `Page` that can be used to represent a page
-of any type. For example, we can create a page of `User` objects:
+这个例子定义了泛型类型 `Page`，它可以用来表示任何类型的页面。例如，可以创建 `User` 对象页面：
 
-```python+schema
+```python
 import strawberry
 
 @strawberry.type
@@ -42,7 +35,8 @@ class User:
 @strawberry.type
 class Query:
     users: Page[User]
----
+```
+```
 type Query {
   users: UserPage!
 }
@@ -57,14 +51,11 @@ type UserPage {
 }
 ```
 
-# Input and Argument Types
+# 输入和参数类型
 
-Arguments to queries and mutations can also be made generic by creating Generic
-Input types. Here we'll define an input type that can serve as a collection of
-anything, then create a specialization by using as a filled-in argument on a
-mutation.
+通过创建泛型输入类型，查询和变更的参数也可以成为泛型。在这里，将定义输入类型，它可以作为任何东西的集合，然后通过在变更上使用作为填充参数来创建专门化。
 
-```python+schema
+```python
 import strawberry
 from typing import Generic, List, Optional, TypeVar
 
@@ -94,7 +85,8 @@ class Query:
     most_recent_post: Optional[Post] = None
 
 schema = strawberry.Schema(query=Query, mutation=Mutation)
----
+```
+```
 input PostInputCollectionInput {
   values: [PostInput!]!
 }
@@ -117,22 +109,19 @@ type Mutation {
 }
 ```
 
-> **Note**: Pay attention to the fact that both `CollectionInput` and
-> `PostInput` are Input types. Providing `posts: CollectionInput[Post]` to
-> `add_posts` (i.e. using the non-input `Post` type) would have resulted in an
-> error:
->
-> ```
-> PostCollectionInput fields cannot be resolved. Input field type must be a
-> GraphQL input type
-> ```
+````{note}
+请注意，`CollectionInput` 和 `PostInput` 都是输入类型。将 `posts: CollectionInput[Post]` 提供给 `add_posts` （即使用非输入 `Post` 类型）将导致异常：
+```
+PostCollectionInput fields cannot be resolved. Input field type must be a
+GraphQL input type
+```
+````
 
-# Multiple Specializations
+# 多个专门化
 
-Using multiple specializations of a Generic type will work as expected. Here we
-define a `Point2D` type and then specialize it for both `int`s and `float`s.
+使用泛型类型的多个专门化可以正常工作。这里定义了 `Point2D` 类型，然后针对 `int` 和 `float` 专门化它。
 
-```python+schema
+```python
 from typing import Generic, TypeVar
 
 import strawberry
@@ -153,7 +142,8 @@ class Mutation:
     @strawberry.mutation
     def store_line_int(self, a: Point2D[int], b: Point2D[int]) -> bool:
         return True
----
+```
+```
 type Mutation {
   storeLineFloat(a: FloatPoint2D!, b: FloatPoint2D!): Boolean!
   storeLineInt(a: IntPoint2D!, b: IntPoint2D!): Boolean!
@@ -170,8 +160,6 @@ input IntPoint2D {
 }
 ```
 
-# Variadic Generics
+# 可变泛型
 
-Variadic Generics, introduced in [PEP-646][pep-646], are currently unsupported.
-
-[pep-646]: https://peps.python.org/pep-0646/
+在 {pep}`646` 中引入的可变泛型 (Variadic Generics) 目前不受支持。

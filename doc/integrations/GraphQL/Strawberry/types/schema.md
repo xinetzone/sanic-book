@@ -1,17 +1,11 @@
----
-title: Schema
----
+(Schema)=
+# 模式
 
-# Schema
+每个 GraphQL API 都有模式（Schema），用于定义 API 的所有功能。模式是通过传递三种[对象类型](./object-types)来定义的：`Query`、`Mutation` 和 `Subscription`。
 
-Every GraphQL API has a schema and that is used to define all the
-functionalities for an API. A schema is defined by passing 3
-[object types](./object-types): `Query`, `Mutation` and `Subscription`.
+`Mutation` 和 `Subscription` 是可选的，同时 `Query` 必须始终存在。
 
-`Mutation` and `Subscription` are optional, meanwhile `Query` has to always be
-there.
-
-This is an example of a schema defined using Strawberry:
+使用 Strawberry 定义的模式示例：
 
 ```python
 import strawberry
@@ -27,7 +21,7 @@ class Query:
 schema = strawberry.Schema(Query)
 ```
 
-## API reference
+## 模式 API 参考
 
 ```python
 class Schema(Query, mutation=None, subscription=None, **kwargs):
@@ -38,35 +32,29 @@ class Schema(Query, mutation=None, subscription=None, **kwargs):
 
 #### `query: Type`
 
-The root query Strawberry type. Usually called `Query`.
+Strawberry 类型的根查询。通常称为 `Query`。
 
-<Note>
-
-A query type is always required when creating a Schema.
-
-</Note>
+```{note}
+创建 Schema 时总是需要查询类型。
+```
 
 #### `mutation: Optional[Type] = None`
 
-The root mutation type. Usually called `Mutation`.
+根变更类型。通常叫做 `Mutation`。
 
 #### `subscription: Optional[Type] = None`
 
-The root subscription type. Usually called `Subscription`.
+根订阅类型。通常称为 `Subscription`。
 
 #### `config: Optional[StrawberryConfig] = None`
 
-Pass a `StrawberryConfig` object to configure how the schema is generated.
-[Read more](/docs/types/schema-configurations).
+传递 `StrawberryConfig` 对象来配置如何生成模式。阅读[更多](./schema-configurations)。
 
 #### `types: List[Type] = []`
 
-List of extra types to register with the Schema that are not directly linked to
-from the root Query.
+要注册到 Schema 的额外类型的列表，这些类型不是直接从根查询链接到的。 
 
-<details class="mb-4">
-<summary>Defining extra `types` when using Interfaces</summary>
-
+````{dropdown} 使用接口时定义额外的 **types**
 ```python
 from datetime import date
 import strawberry
@@ -102,25 +90,23 @@ class Query:
 
 schema = strawberry.Schema(Query, types=[Individual, Company])
 ```
-
-</details>
+````
 
 #### `extensions: List[Type[Extension]] = []`
 
-List of [extensions](/docs/extensions) to add to your Schema.
+添加到模式的 [extensions](../extensions)。
 
 #### `scalar_overrides: Optional[Dict[object, ScalarWrapper]] = None`
 
-Override the implementation of the built in scalars.
-[More information](/docs/types/scalars#overriding-built-in-scalars).
+重写内置标量的实现。[更多信息](overriding-built-in-scalars).
 
 ---
 
-## Methods
+## 方法
 
 ### `.execute()` (async)
 
-Executes a GraphQL operation against a schema (async)
+针对模式执行 GraphQL 操作（async）。
 
 ```python
 async def execute(query, variable_values, context_value, root_value, operation_name):
@@ -129,29 +115,28 @@ async def execute(query, variable_values, context_value, root_value, operation_n
 
 #### `query: str`
 
-The GraphQL document to be executed.
+要执行的 GraphQL 文档。
 
 #### `variable_values: Optional[Dict[str, Any]] = None`
 
-The variables for this operation.
+这个操作的变量。
 
 #### `context_value: Optional[Any] = None`
 
-The value of the context that will be passed down to resolvers.
+将传递给解析器的上下文的值。
 
 #### `root_value: Optional[Any] = None`
 
-The value for the root value that will passed to root resolvers.
+将传递给根解析器的根值的值。
 
 #### `operation_name: Optional[str] = None`
 
-The name of the operation you want to execute, useful when sending a document
-with multiple operations. If no `operation_name` is specified the first
-operation in the document will be executed.
+要执行的操作的名称，在发送包含多个操作的文档时非常有用。如果没有指定 `operation_name`，则第一个
+文档中的操作将被执行。
 
 ### `.execute_sync()`
 
-Executes a GraphQL operation against a schema
+针对模式执行 GraphQL 操作
 
 ```python
 def execute_sync(query, variable_values, context_value, root_value, operation_name):
@@ -160,35 +145,32 @@ def execute_sync(query, variable_values, context_value, root_value, operation_na
 
 #### `query: str`
 
-The GraphQL document to be executed.
+要执行的 GraphQL 文档。
 
 #### `variable_values: Optional[Dict[str, Any]] = None`
 
-The variables for this operation.
+这个操作的变量。
 
 #### `context_value: Optional[Any] = None`
 
-The value of the context that will be passed down to resolvers.
+将传递给解析器的上下文的值。
 
 #### `root_value: Optional[Any] = None`
 
-The value for the root value that will passed to root resolvers.
+将传递给根解析器的根值的值。
 
 #### `operation_name: Optional[str] = None`
 
-The name of the operation you want to execute, useful when sending a document
-with multiple operations. If no `operation_name` is specified the first
-operation in the document will be executed.
+要执行的操作的名称，在发送包含多个操作的文档时非常有用。如果没有指定 `operation_name`，则第一个
+文档中的操作将被执行。
 
 ---
 
-## Handling execution errors
+## 处理执行错误
 
-By default Strawberry will log any errors encountered during a query execution
-to a `strawberry.execution` logger. This behaviour can be changed by overriding
-the `process_errors` function on the `strawberry.Schema` class.
+默认情况下，Strawberry 会将查询执行过程中遇到的任何错误记录到 `strawberry.execution` 日志。这种行为可以通过重写模式的 `strawberry.Schema` 类的 process_errors` 函数来改变。
 
-The default functionality looks like this:
+默认的功能是这样的：
 
 ```python
 # strawberry/schema/base.py

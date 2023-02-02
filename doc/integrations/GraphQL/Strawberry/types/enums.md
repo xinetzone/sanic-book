@@ -1,19 +1,9 @@
----
-title: Enums
----
+(Enums)=
+# 枚举
 
-# Enums
+枚举是一种特殊类型，仅限于一组特定的值。例如，有一些可供选择的冰淇淋，想让用户只从这些选项中进行选择。Strawberry 支持使用 python 标准库中的 {mod}`enum` 定义枚举。下面是关于如何在 Strawberry 中创建枚举类型的快速教程。
 
-Enums are a special kind of type that is restricted to a particular set of values.
-
-For example, we have a few options of ice cream available, and we want to allow
-user to choose only from those options.
-
-Strawberry supports defining enums using enums from python's standard library.
-Here's a quick tutorial on how to create an enum type in Strawberry:
-
-First, create a new class for the new type, which extends class Enum:
-
+首先，为新类型创建新类，它扩展了类 {class}`~enum.Enum`：
 ```python
 from enum import Enum
 
@@ -22,7 +12,7 @@ class IceCreamFlavour(Enum):
     ...
 ```
 
-Then, list options as variables in that class:
+然后，将选项作为该类中的变量列表：
 
 ```python
 class IceCreamFlavour(Enum):
@@ -31,8 +21,7 @@ class IceCreamFlavour(Enum):
     CHOCOLATE = "chocolate"
 ```
 
-Finally we need to register our class as a strawberry type. It's done with the
-`strawberry.enum` decorator:
+最后，需要将我们的类注册为 strawberry 类型。这是用 `strawberry.enum` 装饰器完成的：
 
 ```python
 @strawberry.enum
@@ -42,7 +31,7 @@ class IceCreamFlavour(Enum):
     CHOCOLATE = "chocolate"
 ```
 
-Let's see how we can use Enums in our schema.
+看看如何在模式中使用 `enum`。
 
 ```python
 @strawberry.type
@@ -52,9 +41,9 @@ class Query:
         return IceCreamFlavour.STRAWBERRY
 ```
 
-Defining the enum type above would produce this schema in GraphQL:
+定义上面的枚举类型将在 GraphQL 中产生以下模式：
 
-```graphql
+```
 enum IceCreamFlavour {
   VANILLA
   STRAWBERRY
@@ -62,17 +51,17 @@ enum IceCreamFlavour {
 }
 ```
 
-Here's an example of how you'd use this newly created query:
+下面是如何使用这个新创建的查询的示例：
 
-```graphql
+```
 query {
   bestFlavour
 }
 ```
 
-Here is result of executed query:
+下面是执行查询的结果：
 
-```graphql
+```json
 {
   "data": {
     "bestFlavour": "STRAWBERRY"
@@ -80,8 +69,7 @@ Here is result of executed query:
 }
 ```
 
-We can also use enums when defining object types (using `strawberry.type`). Here
-is an example of an object that has a field using an Enum:
+也可以在定义对象类型时使用枚举（使用 `strawberry.type`）。下面是使用 `Enum` 的对象的字段示例：
 
 ```python
 @strawberry.type
@@ -97,9 +85,9 @@ class Query:
         return Cone(flavour=IceCreamFlavour.STRAWBERRY, num_scoops=4)
 ```
 
-And here's an example of how you'd use this query:
+这里有如何使用这个查询的例子：
 
-```graphql
+```
 query {
   cone {
     flavour
@@ -108,9 +96,9 @@ query {
 }
 ```
 
-Here is result of executed query:
+下面是执行查询的结果：
 
-```graphql
+```
 {
   "data": {
     "cone": {
@@ -121,17 +109,11 @@ Here is result of executed query:
 }
 ```
 
-<Note>
+```{note}
+GraphQL 类型不像 python {mod}`enum` 那样是 `name: value` 的映射。Strawberry 使用枚举成员的名称创建 GraphQL 类型。
+```
 
-GraphQL types are not a map of name: value, like in python enums.
-Strawberry uses the name of the members of the enum to create the GraphQL
-type.
-
-</Note>
-
-You can also deprecate enum value. To do so you need more verbose syntax using
-`strawberry.enum_value` and `deprecation_reason`. You can mix and match string
-and verbose syntax.
+你也可以弃用枚举值。要做到这一点，你需要使用 `strawberry.enum_value` 和 `deprecation_reason` 使用更详细的语法。您可以混合和匹配字符串和详细语法。
 
 ```python
 @strawberry.enum

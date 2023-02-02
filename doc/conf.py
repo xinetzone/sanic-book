@@ -197,5 +197,5 @@ myst_enable_extensions = [
 intersphinx_mapping = {
     'python': ('https://daobook.github.io/cpython/', None),
     'tvm': ('https://xinetzone.github.io/tvm/', None),
-    # "strawberry": ("https://strawberry.rocks/"),
+    "strawberry": ("https://strawberry.rocks/docs", None),
 }

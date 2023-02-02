@@ -1,13 +1,8 @@
----
-title: Resolvers
----
+(Resolvers)=
+# 解析器
+在定义 GraphQL 模式时，通常从 API 的模式定义开始，例如，看一下这个模式：
 
-# Resolvers
-
-When defining a GraphQL schema, you usually start with the definition of the
-schema for your API, for example, let's take a look at this schema:
-
-```python+schema
+```python
 import strawberry
 
 @strawberry.type
@@ -18,7 +13,8 @@ class User:
 @strawberry.type
 class Query:
     last_user: User
----
+```
+```
 type User {
     name: String!
 }
@@ -28,14 +24,11 @@ type Query {
 }
 ```
 
-We have defined a `User` type and a `Query` type. Next, to define how the data
-is returned from our server, we will attach resolvers to our fields.
+已经定义了 `User` 类型和 `Query` 类型。接下来，为了定义如何从服务器返回数据，将把解析器附加到字段。
 
-## Let's define a resolver
+## 定义解析器
 
-Let's create a resolver and attach it to the `lastUser` field. A resolver is a
-Python function that returns data. In Strawberry there are two ways of defining
-resolvers; the first is to pass a function to the field definition, like this:
+让我们创建解析器，并将其附加到 `lastUser` 字段。解析器是返回数据的 Python 函数。在 Strawberry 中有两种定义解析器的方法；第一个是传递函数给字段定义，像这样：
 
 ```python
 def get_last_user() -> User:
@@ -47,29 +40,29 @@ class Query:
     last_user: User = strawberry.field(resolver=get_last_user)
 ```
 
-Now when Strawberry executes the following query, it will call the
-`get_last_user` function to fetch the data for the `lastUser` field:
+现在当 Strawberry 执行下面的查询时，它将调用 `get_last_user` 函数来获取 `lastUser` 字段的数据：
 
-```graphql+response
-{
-  lastUser {
-    name
-  }
-}
----
-{
-  "data": {
-    "lastUser": {
-      "name": "Marco"
+```{eval-rst}
+.. graphiql:: 
+    :query:
+      {
+        lastUser {
+            name
+        }
+        }
+    :response:
+    {
+    "data": {
+        "lastUser": {
+        "name": "Marco"
+        }
     }
-  }
-}
+    }
 ```
 
-## Defining resolvers as methods
+## 将解析器定义为方法
 
-The other way to define a resolver is to use `strawberry.field` as a decorator,
-like here:
+定义解析器的另一种方法是使用 `strawberry.field` 作为装饰器，像在这里：
 
 ```python
 @strawberry.type
@@ -79,26 +72,17 @@ class Query:
         return User(name="Marco")
 ```
 
-this is useful when you want to colocate resolvers and types or when you have
-very small resolvers.
+当您想要合并解析器和类型或当您有非常小的解析器。
 
-<Note>
+```{note}
+`self` 参数在这里有点特殊，当执行 GraphQL 查询时，在使用装饰器定义的解析器的情况下，`self` 参数对应于该字段的 `root` 值。在本例中，`root` 值是值 `Query` 类型，通常为 `None`。在 Schema 上调用 `execute` 方法时，可以更改 `root` 值。下面将详细介绍 `root` 值。
+```
 
-The _self_ argument is a bit special here, when executing a GraphQL query, in
-case of resolvers defined with a decorator, the _self_ argument corresponds to
-the _root_ value that field. In this example the _root_ value is the value
-`Query` type, which is usually `None`. You can change the _root_ value when
-calling the `execute` method on a `Schema`. More on _root_ values below.
+## 定义参数
 
-</Note>
+字段也可以有参数；在 Strawberry 中，字段的参数是在解析器上定义的，就像在 Python 函数中通常做的那样。在 `Query` 中定义字段，按 `ID` 返回用户：
 
-## Defining arguments
-
-Fields can also have arguments; in Strawberry the arguments for a field are
-defined on the resolver, as you would normally do in a Python function. Let's
-define a field on a Query that returns a user by ID:
-
-```python+schema
+```python
 import strawberry
 
 
@@ -113,7 +97,8 @@ class Query:
     def user(self, id: strawberry.ID) -> User:
         # here you'd use the `id` to get the user from the database
         return User(name="Marco")
----
+```
+```
 type User {
     name: String!
 }
@@ -123,13 +108,11 @@ type Query {
 }
 ```
 
-### Optional arguments
+### 可选参数
 
-Optional or nullable arguments can be expressed using `Optional`. If you need to
-differentiate between `null` (maps to `None` in Python) and no arguments being
-passed, you can use `UNSET`:
+可选或可空参数可以用 `Optional` 表示。如果你需要区分 `null`（在 Python 中映射为 `None`）和没有传入参数，你可以使用 `UNSET`：
 
-```python+schema
+```python
 from typing import Optional
 import strawberry
 
@@ -148,39 +131,39 @@ class Query:
         if name is None:
             return "Name was null!"
         return f"Hello {name}!"
----
+```
+```
 type Query {
     hello(name: String = null): String!
     greet(name: String): String!
 }
 ```
 
-Like this you will get the following responses:
+这样你会得到：
 
-```graphql+response
-{
-  unset: greet
-  null: greet(name: null)
-  name: greet(name: "Dominique")
-}
----
-{
-  "data": {
-    "unset": "Name was not set!",
-    "null": "Name was null!",
-    "name": "Hello Dominique!"
-  }
-}
+```{eval-rst}
+.. graphiql:: 
+    :query:
+    {
+    unset: greet
+    null: greet(name: null)
+    name: greet(name: "Dominique")
+    }
+    :response:
+    {
+    "data": {
+        "unset": "Name was not set!",
+        "null": "Name was null!",
+        "name": "Hello Dominique!"
+    }
+    }
 ```
 
-## Accessing field's parent's data
+## 访问字段的父级数据
 
-It is quite common to want to be able to access the data from the field's parent
-in a resolver. For example let's say that we want to define a `fullName` field
-on our `User`. We can define a new field with a resolver that combines its first
-and last names:
+希望能够在解析器中访问来自字段的父字段的数据是很常见的。例如，假设想在 `User` 上定义 `fullName` 字段。可以用结合了名字和姓氏的解析器定义新字段：
 
-```python+schema
+```python
 import strawberry
 
 
@@ -192,7 +175,8 @@ class User:
     @strawberry.field
     def full_name(self) -> str:
         return f"{self.first_name} {self.last_name}"
----
+```
+```
 type User {
     firstName: String!
     lastName: String!
@@ -200,12 +184,7 @@ type User {
 }
 ```
 
-In the case of a decorated resolver you can use the _self_ parameter as you
-would do in a method on a normal Python class[^1].
-
-For resolvers defined as normal Python functions, you can use the special `root`
-parameter, when added to arguments of the function, Strawberry will pass to it
-the value of the parent:
+在修饰过的解析器的情况下，你可以使用 `self` 参数，就像你在普通 Python class[^1] 的方法中所做的那样。对于定义为普通 Python 函数的解析器，您可以使用特殊的 `root` 形参，当添加到函数的实参中时，Strawberry 会将父参数的值传递给它：
 
 ```python
 import strawberry
@@ -222,12 +201,9 @@ class User:
     full_name: str = strawberry.field(resolver=full_name)
 ```
 
-## Accessing execution information
+## 访问执行信息
 
-Sometimes it is useful to access the information for the current execution
-context. Strawberry allows to declare a parameter of type `Info` that will be
-automatically passed to the resolver. This parameter containes the information
-for the current execution context.
+有时访问当前执行上下文的信息是有用的。Strawberry 允许声明 `Info` 类型的参数，该参数将自动传递给解析器。此参数包含当前执行上下文的信息。
 
 ```python
 import strawberry
@@ -245,16 +221,13 @@ class User:
     full_name: str = strawberry.field(resolver=full_name)
 ```
 
-<Tip>
+```{tip}
+你不必称这个参数为 `info`，它的名字可以是任何东西。Strawberry 使用类型将正确的值传递给解析器。
+```
 
-You don't have to call this parameter `info`, its name can be anything.
-Strawberry uses the type to pass the correct value to the resolver.
+### 解析器 API
 
-</Tip>
-
-### API
-
-Info objects contain information for the current execution context:
+`Info` 对象包含当前执行上下文的信息：
 
 `class Info(Generic[ContextType, RootValueType])`
 
