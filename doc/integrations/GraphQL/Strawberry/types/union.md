@@ -10,6 +10,7 @@ union MediaItem = Audio | Video | Image
 每当在模式中返回 `MediaItem` 时，可能会得到 `Audio`、`Video` 或 `Image`。注意，联合类型的成员必须是具体的对象类型；不能在接口、其他联合或标量之外创建联合类型。
 
 联合的一个很好的用例将出现在搜索字段中。例如：
+
 ```
 searchMedia(term: "strawberry") {
   ... on Audio {
@@ -33,7 +34,6 @@ searchMedia(term: "strawberry") {
 你可以从 {mod}`typing` 模块中使用 `Union` 类型，它会根据 `Union` 成员的名字自动生成类型名：
 
 ```python
-from typing import Union
 import strawberry
 
 @strawberry.type
@@ -50,7 +50,7 @@ class Image:
 
 @strawberry.type
 class Query:
-    latest_media: Union[Audio, Video, Image]
+    latest_media: Audio | Video | Image
 ```
 ```
 union AudioVideoImage = Audio | Video | Image

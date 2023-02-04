@@ -22,7 +22,7 @@ schema = strawberry.Schema(query=Query, config=StrawberryConfig(auto_camel_case=
 
 在这种情况下，禁用了自动驼峰大小写功能，所以你的输出模式将是这样的：
 
-```graphql
+```
 type Query {
   example_field: String!
 }

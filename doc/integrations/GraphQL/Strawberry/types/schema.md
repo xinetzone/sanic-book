@@ -94,7 +94,7 @@ schema = strawberry.Schema(Query, types=[Individual, Company])
 
 #### `extensions: List[Type[Extension]] = []`
 
-添加到模式的 [extensions](../extensions)。
+添加到模式的 [extensions](../extensions/index)。
 
 #### `scalar_overrides: Optional[Dict[object, ScalarWrapper]] = None`
 

@@ -55,7 +55,7 @@ class Mutation:
         print(f'Restarting the server')
 ```
 
-```schema
+```
 type Mutation {
   restart: Void
 }

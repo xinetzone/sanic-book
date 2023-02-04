@@ -1,28 +1,18 @@
----
-title: DataLoaders
----
+(DataLoaders)=
+# 数据记载器
 
-# DataLoaders
+Strawberry 内置了 DataLoader，这是通用的实用程序，可以通过批处理来减少对数据库或第三方 API 的请求数量
+以及缓存请求。
 
-Strawberry comes with a built-in DataLoader, a generic utility that can be used
-to reduce the number of requests to databases or third party APIs by batching
-and caching requests.
+```{note}
+数据记载器提供了异步API，所以它们只在异步上下文中工作
+```
 
-<Note>
+请参阅官方 [DataLoaders 规范](https://github.com/graphql/dataloader) 以获得 DataLoaders 的高级指南。
 
-DataLoaders provide an async API, so they only work in async context
+## 基本用法
 
-</Note>
-
-Refer the official DataLoaders
-[specification](https://github.com/graphql/dataloader) for an advanced guide on
-DataLoaders.
-
-## Basic usage
-
-Here's how you'd use a DataLoader, first we need to define a function that
-allows to fetch data in batches. Let's say that we have a user type, that has
-only an id:
+下面是如何使用 DataLoader，首先需要定义允许批量获取数据的函数。假设有一个用户类型，只有一个 id：
 
 ```python
 import strawberry
@@ -33,21 +23,14 @@ class User:
     id: strawberry.ID
 ```
 
-we need to define a function that returns a list of users based on a list of
-keys passed:
+需要定义函数，根据传递的键列表返回用户列表：
 
 ```python
-from typing import List
-
-
-async def load_users(keys: List[int]) -> List[User]:
+async def load_users(keys: list[int]) -> list[User]:
     return [User(id=key) for key in keys]
 ```
 
-Normally this function would interact with a database or 3rd party API, but for
-our example we don't need that.
-
-Now that we have a loader function, we can define a DataLoader and use it:
+通常，这个函数将与数据库或第三方 API 交互，但对于我们的示例，不需要这样做。现在我们有了加载器函数，可以定义 DataLoader 并使用它：
 
 ```python
 from strawberry.dataloader import DataLoader
@@ -57,9 +40,7 @@ loader = DataLoader(load_fn=load_users)
 user = await loader.load(1)
 ```
 
-This will result in a call to `load_users` with keys equal to `[1]`. Where this
-becomes really powerful is when you make multiple requests, like in this
-example:
+这将导致调用 `load_users`，键值为 `[1]`。当你发出多个请求时，这个功能就会变得非常强大，就像下面这个例子：
 
 ```python
 import asyncio
@@ -67,35 +48,28 @@ import asyncio
 [user_a, user_b] = await asyncio.gather(loader.load(1), loader.load(2))
 ```
 
-This will result in a call to `load_users` with keys equal to `[1, 2]`. Thus
-reducing the number of calls to our database or 3rd party services to 1.
+这将导致调用键值为 `[1, 2]` 的 `load_users`。因此，将对我们的数据库或第三方服务的调用数量减少到 1。
 
-Additionally by default DataLoader caches the loads, so for example the
-following code:
+此外，默认情况下 DataLoader 会缓存负载，例如下面的代码：
 
 ```python
 await loader.load(1)
 await loader.load(1)
 ```
 
-Will result in only one call to `load_users`.
+将导致只调用一次 `load_users`。
 
-And finally sometimes we'll want to load more than one key at a time. In those
-cases we can use the `load_many` method.
+最后，有时想一次加载多个键。在这些情况下，可以使用 `load_many` 方法。
 
 ```python
 [user_a, user_b, user_c] = await loader.load_many([1, 2, 3])
 ```
 
-### Errors
+### 异常
 
-An error associated with a particular key can be indicated by including an
-exception value in the corresponding position in the returned list. This
-exception will be thrown by the `load` call for that key. With the same `User`
-class from above:
+与特定键相关的错误可以通过在返回列表的相应位置包含异常值来指示。此异常将由该键的 `load` 调用引发。使用上面相同的 `User` 类：
 
 ```python
-from typing import List, Union
 from strawberry.dataloader import DataLoader
 
 users_database = {
@@ -104,42 +78,28 @@ users_database = {
 }
 
 
-async def load_users(keys: List[int]) -> List[Union[User, ValueError]]:
-    def lookup(key: int) -> Union[User, ValueError]:
+async def load_users(keys: list[int]) -> list[User | ValueError]:
+    def lookup(key: int) -> User | ValueError:
         if user := users_database.get(key):
             return user
-
         return ValueError("not found")
-
     return [lookup(key) for key in keys]
 
 
 loader = DataLoader(load_fn=load_users)
 ```
 
-For this loader, calls like `await loader.load(1)` will return `User(id=1)`,
-while `await loader.load(3)` will raise `ValueError("not found")`.
+对于这个加载器，像 `await loader.load(1)` 这样的调用将返回 `User(id=1)`，而 `await loader.load(3)` 将引发 `ValueError("not found")`。
 
-It's important that the `load_users` function returns exception values within
-the list for each incorrect key. A call with `keys == [1, 3]` returns
-`[User(id=1), ValueError("not found")]`, and doesn't raise the `ValueError`
-directly. If the `load_users` function raises an exception, even `load`s with an
-otherwise valid key, like `await loader.load(1)`, will raise that exception.
+对于每个不正确的键，`load_users` 函数在列表中返回异常值是很重要的。使用 `keys == [1, 3]` 的调用返回 `[User(id=1), ValueError("not found")]`，并且不会直接引发 `ValueError`。如果 `load_users` 函数引发异常，即使是带有其他有效键的加载，如 `await loader.load(1)`，也会引发异常。
 
-### Overriding Cache Key
+### 覆盖缓存键
 
-By default, the input is used as cache key. In the above examples, the cache key
-is always a scalar (int, float, string, etc.) and uniquely resolves the data for
-the input.
+缺省情况下，该输入作为缓存键。在上面的例子中，缓存键总是标量(int, float, string 等)，并且唯一地解析输入的数据。
 
-In practical applications there are situations where it requires combination of
-fields to uniquely identify the data. By providing `cache_key_fn` argument to
-the `DataLoader` the behaviour of generating key is changed. It is also useful
-when objects are keys and two objects should be considered equivalent. The
-function definition takes an input parameter and returns a `Hashable` type.
+在实际应用中，有时需要组合字段来惟一地标识数据。通过向 `DataLoader` 提供 `cache_key_fn` 参数，可以改变生成 key 的行为。当对象是键并且两个对象应该被认为是等价的时候，它也很有用。函数定义接受输入参数并返回 `Hashable` 类型。
 
 ```python
-from typing import List, Union
 from strawberry.dataloader import DataLoader
 
 
@@ -163,41 +123,31 @@ data2 = await loader.load(User(1, "Nick"))
 assert data1 == data2  # returns true
 ```
 
-`loader.load(User(1, "Nick"))` will call `custom_cache_key` internally, passing
-the object as parameter to the function which will return `User.id` as key that
-is `1`. The second call will check the cache for the key returned by
-`custom_cache_key` and will return the cache object from the loader cache.
+`loader.load(User(1, "Nick"))` 将在内部调用 `custom_cache_key`，将对象作为参数传递给函数，函数将返回 `User.id` 为键值 `1`。第二个调用将检查缓存中 `custom_cache_key` 返回的键，并从加载器缓存中返回缓存对象。
 
-The implementation relies on users to handle conflicts while generating the
-cache key. In case of conflict the data will be overriden for the key.
+该实现依赖于用户在生成缓存键时处理冲突。如果发生冲突，将覆盖该键的数据。
 
-### Cache invalidation
+### 缓存失效
 
-By default DataLoaders use an internal cache. It is great for performance,
-however it can cause problems when the data is modified (i.e., a mutation), as
-the cached data is no longer be valid! 😮
+默认情况下，dataloader 使用内部缓存。这对性能很有好处，但是当数据被修改(即变更)时，它可能会导致问题，因为缓存的数据不再有效！😮
 
-To fix it, you can explicitly invalidate the data in the cache, using one of
-these ways:
+要修复它，你可以显式地使缓存中的数据无效，使用以下方法之一：
 
-- Specifying a key with `loader.clear(id)`,
-- Specifying several keys with `loader.clear_many([id1, id2, id3, ...])`,
-- Invalidating the whole cache with `loader.clear_all()`
+- 使用 `loader.clear(id)` 指定 key，
+- 使用 `loader.clear_many([id1, id2, id3, ...])` 指定多个 key，
+- 使用 `loader.clear_all()` 使整个缓存失效。
 
-### Importing data into cache
+### 将数据导入缓存
 
-While dataloaders are powerful and efficient, they do not support complex
-queries.
+虽然数据加载器功能强大且高效，但它们不支持复杂的查询。
 
-If your app needs them, you'll probably mix dataloaders and direct database
-calls.
+如果你的应用需要它们，你可能会混合使用数据加载器和直接数据库调用。
 
-In these scenarios, it is useful to import the data retrieved externally into
-the dataloader, in order to avoid reloading data afterwards.
+在这些场景中，将从外部检索到的数据导入到数据加载器中是很有用的，以避免之后重新加载数据。
 
-For example:
+例如：
 
-```python+graphql
+```python
 @strawberry.type
 class Person:
     id: strawberry.ID
@@ -220,7 +170,8 @@ class Query:
         loader.prime_many({person.id: person for person in people})
 
         return people
----
+```
+```
 {
   getAllPeople {
     id
@@ -231,23 +182,16 @@ class Query:
 }
 ```
 
-### Custom Cache
+### 自定义缓存
 
-DataLoader's default cache is per-request and it caches data in memory. This
-strategy might not be optimal or safe for all use cases. For example, if you are
-using DataLoader in a distributed environment, you might want to use a
-distributed cache. DataLoader let you override the custom caching logic, which
-can get data from other persistent caches (e.g Redis)
+DataLoader 默认缓存每个请求的，它在内存中缓存数据。对于所有用例，此策略可能不是最佳的或安全的。例如，如果您在分布式环境中使用 DataLoader，则可能希望使用分布式缓存。DataLoader 让你覆盖自定义缓存逻辑，它可以从其他持久缓存(例如 Redis )获取数据。
 
-`DataLoader` provides an argument `cache_map`. It takes an instance of a class
-which implements an abstract interface `AbstractCache`. The interface methods
-are `get`, `set`, `delete` and `clear`
+`DataLoader` 提供了参数 `cache_map`。它接受实现抽象接口 `AbstractCache` 的类的实例。接口方法有 `get`、`set`、`delete` 和 `clear`。
 
-The `cache_map` parameter overrides the `cache_key_fn` if both arguments are
-provided.
+如果同时提供了 `cache_map` 参数，则 `cache_map` 参数将覆盖 `cache_key_fn` 参数。
 
 ```python
-from typing import List, Union, Any, Optional
+from typing import Any
 
 import strawberry
 from strawberry.types import Info
@@ -263,7 +207,7 @@ class UserCache(AbstractCache):
     def __init__(self):
         self.cache = {}
 
-    def get(self, key: Any) -> Union[Any, None]:
+    def get(self, key: Any) -> Any| None:
         return self.cache.get(key)  # fetch data from persistent cache
 
     def set(self, key: Any, value: Any) -> None:
@@ -282,13 +226,13 @@ class User:
     name: str
 
 
-async def load_users(keys) -> List[User]:
+async def load_users(keys) -> list[User]:
     return [User(id=key, name="Jane Doe") for key in keys]
 
 
 class MyGraphQL(GraphQL):
     async def get_context(
-        self, request: Union[Request, WebSocket], response: Optional[Response]
+        self, request: Request | WebSocket, response: Response|None
     ) -> Any:
         return {"user_loader": DataLoader(load_fn=load_users, cache_map=UserCache())}
 
@@ -304,13 +248,11 @@ schema = strawberry.Schema(query=Query)
 app = MyGraphQL(schema, graphiql=True)
 ```
 
-## Usage with GraphQL
+## 使用 GraphQL
 
-Let's see an example of how you can use DataLoaders with GraphQL:
+看一个如何在 GraphQL 中使用 DataLoaders 的例子：
 
 ```python
-from typing import List
-
 from strawberry.dataloader import DataLoader
 import strawberry
 
@@ -320,7 +262,7 @@ class User:
     id: strawberry.ID
 
 
-async def load_users(keys) -> List[User]:
+async def load_users(keys) -> list[User]:
     return [User(id=key) for key in keys]
 
 
@@ -337,50 +279,44 @@ class Query:
 schema = strawberry.Schema(query=Query)
 ```
 
-Here we have defined the same loader as before, along side with a GraphQL query
-that allows to fetch a single user by id.
+这里定义了与前面相同的加载器，以及允许按 id 获取单个用户的 GraphQL 查询。可以通过执行以下请求来使用这个查询：
 
-We can use this query by doing the following request:
-
-```graphql+response
-{
-  first: getUser(id: 1) {
-    id
-  }
-  second: getUser(id: 2) {
-    id
-  }
-}
----
-{
-  "data": {
-    "first": {
-      "id": 1
-    },
-    "second": {
-      "id": 2
+```{eval-rst}
+.. graphiql::
+  :query:
+    {
+      first: getUser(id: 1) {
+          id
+      }
+      second: getUser(id: 2) {
+          id
+      }
     }
-  }
-}
+  :response:
+    {
+      "data": {
+          "first": {
+          "id": 1
+          },
+          "second": {
+          "id": 2
+          }
+      }
+    }
 ```
 
-Even if this query is fetching two users, it still results in one call to
-`load_users`.
+即使这个查询正在获取两个用户，它仍然会导致对 `load_users` 的一次调用。
 
-## Usage with context
+## 上下文用法 context
 
-As you have seen in the code above, the dataloader is instantiated outside the
-resolver, since we need to share it between multiple resolvers or even between
-multiple resolver calls. However this is a not a recommended pattern when using
-your schema inside a server because the dataloader will cache results for as
-long as the server is running.
+正如您在上面的代码中所看到的，数据加载器是在解析器之外实例化的，因为需要在多个解析器之间甚至在多个解析器调用之间共享它。但是，当在服务器内部使用模式时，不推荐使用这种模式，因为只要服务器在运行，数据加载器就会缓存结果。
 
-Instead a common pattern is to create the dataloader when creating the GraphQL
-context so that it only caches results with a single request. Let's see an
-example of this using our ASGI view:
+相反，一种常见的模式是在创建 GraphQL 上下文时创建数据加载器，这样它只缓存带有单个请求的结果。
+
+使用 ASGI 视图的例子：
 
 ```python
-from typing import List, Union, Any, Optional
+from typing import Any
 
 import strawberry
 from strawberry.types import Info
@@ -397,13 +333,13 @@ class User:
     id: strawberry.ID
 
 
-async def load_users(keys) -> List[User]:
+async def load_users(keys) -> list[User]:
     return [User(id=key) for key in keys]
 
 
 class MyGraphQL(GraphQL):
     async def get_context(
-        self, request: Union[Request, WebSocket], response: Optional[Response]
+        self, request: Request| WebSocket, response: Response|None
     ) -> Any:
         return {"user_loader": DataLoader(load_fn=load_users)}
 
@@ -419,15 +355,13 @@ schema = strawberry.Schema(query=Query)
 app = MyGraphQL(schema)
 ```
 
-You can now run the example above with any ASGI server, you can read
-[ASGI](../integrations/asgi.md)) to get more details on how to run the app. In
-case you choose uvicorn you can install it wih
+你现在可以在任何 ASGI 服务器上运行上面的例子，你可以阅读 [ASGI](../integrations/asgi.md) 来获得关于如何运行应用程序的更多细节。如果你选择 `uvicorn`，你可以安装它
 
 ```bash
 pip install uvicorn
 ```
 
-and then, assuming we named our file above `schema.py` we start the app with
+假设把上面的文件命名为 `schema.py`，那么：
 
 ```
 uvicorn schema:app

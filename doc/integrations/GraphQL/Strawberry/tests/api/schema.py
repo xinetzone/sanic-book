@@ -1,43 +1,44 @@
+import uuid
+import decimal
+import datetime
+from typing import Any
 import strawberry
+from strawberry.sanic.views import GraphQLView as _GraphQLView
+from strawberry.types import Info
+from strawberry.dataloader import DataLoader
+from strawberry.http.temporal_response import TemporalResponse
+from strawberry.schema.config import StrawberryConfig
+from sanic.request import Request
+from .snowflake import snowflake
+
 
 @strawberry.type
 class User:
     id: strawberry.ID
-    name: str
-    
-def get_author_for_book(root) -> "Author":
-    return Author(name="Michael Crichton")
 
+users_database = {
+    "1": User(id=1),
+    "2": User(id=2),
+}
 
-@strawberry.type
-class Book:
-    title: str
-    author: str #"Author" = strawberry.field(resolver=get_author_for_book)
+async def load_users(keys: list[strawberry.ID]) -> list[User | ValueError]:
+    def lookup(key: strawberry.ID) -> User | ValueError:
+        if user := users_database.get(key):
+            print(user)
+            return user
+        return ValueError("not found")
+    return [lookup(key) for key in keys]
 
-def get_books_for_author(root):
-    return [Book(title="Jurassic Park")]
+class GraphQLView(_GraphQLView):
+    async def get_context(self, request: Request, response: TemporalResponse) -> Any:
+        return {"user_loader": DataLoader(load_fn=load_users)}
 
-
-@strawberry.type
-class Author:
-    name: str
-    books: list[Book] = strawberry.field(resolver=get_books_for_author)
-
-# 在这个例子中，你可以安全地忽略 Query，它是 strawberry.Schema 所要求的，
-# 所以为了完整起见，这里包含了它
 @strawberry.type
 class Query:
     @strawberry.field
-    def hello() -> str:
-        return "world"
+    async def user(self, id: strawberry.ID, info: Info) -> User:
+        print(f"ID: {id}, {type(id)}")
+        return await info.context["user_loader"].load(id)
 
-
-@strawberry.type
-class Mutation:
-    @strawberry.mutation
-    def add_book(self, title: str, author: str) -> Book:
-        print(f"Adding {title} by {author}")
-        return Book(title=title, author=author)
-
-
-schema = strawberry.Schema(query=Query, mutation=Mutation)
+schema = strawberry.Schema(query=Query, #mutation=Mutation,
+                           config=StrawberryConfig(auto_camel_case=False))

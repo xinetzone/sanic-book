@@ -11,6 +11,7 @@ Strawberry 支持[模式指令](https://spec.graphql.org/June2018/#TypeSystemDir
 模式中使用：
 
 ```python
+# directives.py
 import strawberry
 from strawberry.schema_directive import Location
 
@@ -18,8 +19,8 @@ from strawberry.schema_directive import Location
 @strawberry.schema_directive(locations=[Location.OBJECT])
 class Keys:
     fields: str
-
-
+```
+```python
 from .directives import Keys
 
 
@@ -29,9 +30,9 @@ class User:
     name: str
 ```
 
-This will result in the following schema:
+这将产生以下模式：
 
-```graphql
+```
 type User @keys(fields: "id") {
   id: ID!
   name: String!

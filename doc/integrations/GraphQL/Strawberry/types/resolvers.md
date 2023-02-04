@@ -2,6 +2,8 @@
 # 解析器
 在定义 GraphQL 模式时，通常从 API 的模式定义开始，例如，看一下这个模式：
 
+::::{card-carousel} 2
+:::{card} Python
 ```python
 import strawberry
 
@@ -14,6 +16,8 @@ class User:
 class Query:
     last_user: User
 ```
+:::
+:::{card} Schema
 ```
 type User {
     name: String!
@@ -23,6 +27,9 @@ type Query {
     lastUser: User!
 }
 ```
+:::
+::::
+
 
 已经定义了 `User` 类型和 `Query` 类型。接下来，为了定义如何从服务器返回数据，将把解析器附加到字段。
 
@@ -44,20 +51,20 @@ class Query:
 
 ```{eval-rst}
 .. graphiql:: 
-    :query:
-      {
-        lastUser {
-            name
-        }
-        }
-    :response:
+  :query:
     {
-    "data": {
+      lastUser {
+        name
+     }
+    }
+  :response:
+    {
+      "data": {
         "lastUser": {
         "name": "Marco"
-        }
+      }
     }
-    }
+   }
 ```
 
 ## 将解析器定义为方法
@@ -110,46 +117,50 @@ type Query {
 
 ### 可选参数
 
-可选或可空参数可以用 `Optional` 表示。如果你需要区分 `null`（在 Python 中映射为 `None`）和没有传入参数，你可以使用 `UNSET`：
-
+可选或可空参数可以用 {func}`~typing.Optional` 表示。如果你需要区分 `null`（在 Python 中映射为 `None`）和没有传入参数，你可以使用 `UNSET`：
+::::{card-carousel} 2
+:::{card} Python
+:width: 100%
 ```python
-from typing import Optional
 import strawberry
 
 @strawberry.type
 class Query:
     @strawberry.field
-    def hello(self, name: Optional[str] = None) -> str:
+    def hello(self, name: str|None = None) -> str:
         if name is None:
             return "Hello world!"
         return f"Hello {name}!"
 
     @strawberry.field
-    def greet(self, name: Optional[str] = strawberry.UNSET) -> str:
+    def greet(self, name: str|None = strawberry.UNSET) -> str:
         if name is strawberry.UNSET:
             return "Name was not set!"
         if name is None:
             return "Name was null!"
         return f"Hello {name}!"
 ```
+:::{card} Schema
+:width: 75%
 ```
 type Query {
     hello(name: String = null): String!
     greet(name: String): String!
 }
 ```
-
+:::
+::::
 这样你会得到：
 
 ```{eval-rst}
 .. graphiql:: 
-    :query:
+  :query:
     {
     unset: greet
     null: greet(name: null)
     name: greet(name: "Dominique")
     }
-    :response:
+  :response:
     {
     "data": {
         "unset": "Name was not set!",
@@ -163,6 +174,8 @@ type Query {
 
 希望能够在解析器中访问来自字段的父字段的数据是很常见的。例如，假设想在 `User` 上定义 `fullName` 字段。可以用结合了名字和姓氏的解析器定义新字段：
 
+::::{card-carousel} 2
+:::{card} Python
 ```python
 import strawberry
 
@@ -176,6 +189,8 @@ class User:
     def full_name(self) -> str:
         return f"{self.first_name} {self.last_name}"
 ```
+:::
+:::{card} Schema
 ```
 type User {
     firstName: String!
@@ -183,6 +198,8 @@ type User {
     fullName: String!
 }
 ```
+:::
+::::
 
 在修饰过的解析器的情况下，你可以使用 `self` 参数，就像你在普通 Python class[^1] 的方法中所做的那样。对于定义为普通 Python 函数的解析器，您可以使用特殊的 `root` 形参，当添加到函数的实参中时，Strawberry 会将父参数的值传递给它：
 

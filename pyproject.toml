@@ -47,7 +47,8 @@ doc = [
   # "matplotlib",
   "sphinx-design",
   "sphinxcontrib-bibtex",
-  "sphinx-sitemap"
+  "sphinx-sitemap",
+  "sphinx>=5.3"
 ]
 
 [tool.pdm.build]

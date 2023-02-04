@@ -1,4 +1,4 @@
-# Integrations
+# 集成
 
 ```{toctree}
 aiohttp
