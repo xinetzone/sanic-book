@@ -164,7 +164,7 @@ html_theme_options = {
     "primary_sidebar_end": ["sidebar-ethical-ads.html"],
     "secondary_sidebar_items": ["page-toc.html", "edit-this-page.html"],
     # "page_sidebar_items": [], # 删除右侧边栏
-    "footer_items": ["copyright", "sphinx-version", "last-updated", ],
+    "footer_end": ["copyright", "sphinx-version", "last-updated", ],
     # "use_download_button": True,
 }
 
@@ -199,3 +199,5 @@ intersphinx_mapping = {
     'tvm': ('https://xinetzone.github.io/tvm/', None),
     # "strawberry": ("https://strawberry.rocks/", None),
 }
+
+html_baseurl = "https://xinetzone.github.io/sanic-book"

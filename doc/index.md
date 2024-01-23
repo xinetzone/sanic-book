@@ -6,6 +6,8 @@
 ```{toctree}
 :maxdepth: 2
 
+basics/index
+sanic-ext/index
 html/index
 integrations/index
 deploy/index

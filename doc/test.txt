@@ -1,0 +1,21 @@
+## 快速 TLS 使用
+
+启用 TLS 运行 Sanic 就像传递文件路径一样简单：
+
+```bash
+sanic path.to.server:app --cert=/path/to/bundle.crt --key=/path/to/privkey.pem
+```
+
+或者包含 `fullchain.pem` 和 `privkey.pem` 的目录：
+```bash
+sanic path.to.server:app --tls=/path/to/certs
+```
+
+更好的是，当你在开发时，让 Sanic 处理本地 TLS 证书的设置，这样你就可以通过 `https://localhost:8443`` 使用 TLS 访问你的网站了。
+
+```bash
+sanic path.to.server:app --dev --auto-tls
+```
+
+## `websockets`
+使用 websockets 包，能够在短时间内启动并运行 websockets。
