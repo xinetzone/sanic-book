@@ -10,6 +10,7 @@ authors = [
 ]
 dependencies = [
   "d2py",
+  "httpx",
   "sanic[ext]",
   "strawberry-graphql[debug-server]",
   "importlib-metadata>=4.12"
