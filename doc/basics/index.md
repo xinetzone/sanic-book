@@ -6,4 +6,5 @@ app
 config/index
 handlers/index
 request/index
+websockets
 ```

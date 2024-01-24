@@ -7,6 +7,7 @@
 :maxdepth: 2
 
 basics/index
+best-practices/index
 sanic-ext/index
 html/index
 integrations/index

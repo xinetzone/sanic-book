@@ -2,5 +2,6 @@
 
 ```{toctree}
 intro
-custom
+class-based-views
+streaming
 ```
