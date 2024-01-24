@@ -23,6 +23,6 @@ app.blueprint(api) # 注册蓝图
 async def foo_handler(request: Request) -> HTTPResponse:
     return json({"foo": "bar"})
 
-@app.get("/")
-async def foo_handler(request: Request) -> HTTPResponse:
-    return json({"foo": "bar"})
+if __name__ == '__main__':
+    # app.run(host='0.0.0.0', port=8888, debug=True, dev=True)
+    app.run(host='localhost', port=8888, debug=True, dev=True)
